@@ -209,3 +209,5 @@ __marimo__/
 # Local development files
 *.pkl
 *.json
+
+Dockerfile
