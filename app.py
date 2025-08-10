@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 from feature_engineer import FeatureEngineer
-from xgboost import XGBClassifier, XGBRegressor
+from xgboost import XGBClassifier
 
 preprocessor = joblib.load("pmgsy_preprocessor.pkl")
 le_scheme=joblib.load("scheme_label_encoder.pkl")
@@ -10,8 +10,10 @@ le_scheme=joblib.load("scheme_label_encoder.pkl")
 xgb = XGBClassifier()
 xgb.load_model("pmgsy_xgb.json")
 
-xgb_reg = XGBRegressor()
-xgb_reg.load_model("pmgsy_xgb_reg.json")
+reg_pipeline = joblib.load("pmgsy_xgb_reg_pipeline.pkl")
+
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to:", ["Scheme Classifier", "Cost Prediction"])
 
 st.title("🛣️ PMGSY Scheme Classifier")
 st.write("Upload Project data(csv)")
@@ -25,22 +27,37 @@ if uploaded_file is not None:
 
     original_data=data.copy()
 
-    if "PMGSY_SCHEME" in data.columns:
-        data=data.drop("PMGSY_SCHEME",axis=1)
+    if page == "Scheme Classifier":
+        if "PMGSY_SCHEME" in data.columns:
+            data = data.drop("PMGSY_SCHEME", axis=1)
 
-    fe = FeatureEngineer()
-    data = fe.transform(data)
+        fe = FeatureEngineer(is_regression=False)
+        data = fe.transform(data)
+        X_processed = preprocessor.transform(data)
 
-    X_processed = preprocessor.transform(data)
-    predictions_num = xgb.predict(X_processed)
-    predictions = le_scheme.inverse_transform(predictions_num)
-    data["Predicted_Scheme"]=predictions
+        st.markdown("## 🔍 Scheme Classification")
+        predictions_num = xgb.predict(X_processed)
+        predictions = le_scheme.inverse_transform(predictions_num)
+        original_data["Predicted_Scheme"] = predictions
+        st.dataframe(original_data[["Predicted_Scheme"]])
 
-    estimated_costs=xgb_reg.predict(X_processed)
-    data["Estimated_Funding"]=estimated_costs.round(2)
+    elif page == "Cost Prediction":
+        if "COST_OF_WORKS_SANCTIONED" in data.columns:
+            data = data.drop("COST_OF_WORKS_SANCTIONED", axis=1)
 
-    st.subheader("predicted Schemes & Estimated Funding")
-    st.dataframe(data)
+        st.markdown("## 💰 Estimated Funding")
+        estimated_costs = reg_pipeline.predict(data)
+        original_data["Estimated_Funding"] = estimated_costs.round(2)
+        st.dataframe(original_data[["Estimated_Funding"]])
 
-    csv=data.to_csv(index=False).encode("utf-8-sig")
-    st.download_button("Download predictions",csv,"pmgsy_predictions.csv","text/csv") 
+    st.markdown("## 📥 Download Full Results")
+    results_csv = original_data.to_csv(index=False).encode("utf-8-sig")
+    st.download_button(
+        "Download Predictions",
+        results_csv,
+        "pmgsy_predictions.csv",
+        "text/csv"
+    )
+
+else:
+    st.info("👆 Please upload a CSV file to begin.") 
