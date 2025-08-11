@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
-import joblib
+from pmgsy.model_utils import load_models, predict_scheme, predict_cost
 
-clf_pipeline = joblib.load("pmgsy_xgb_clf_pipeline.pkl")
-le_scheme=joblib.load("scheme_label_encoder.pkl")
-reg_pipeline = joblib.load("pmgsy_xgb_reg_pipeline.pkl")
+clf_pipeline, reg_pipeline, le_scheme = load_models()
 
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to:", ["Scheme Classifier", "Cost Prediction"])
@@ -36,8 +34,7 @@ if uploaded_file is not None:
             data = data.drop("PMGSY_SCHEME", axis=1)
 
         st.markdown("## 🔍 Scheme Classification")
-        predictions_num = clf_pipeline.predict(data)
-        predictions = le_scheme.inverse_transform(predictions_num)
+        predictions = predict_scheme(clf_pipeline, le_scheme, data)
         original_data["Predicted_Scheme"] = predictions
         st.dataframe(original_data[["Predicted_Scheme"]])
 
@@ -46,7 +43,7 @@ if uploaded_file is not None:
             data = data.drop("COST_OF_WORKS_SANCTIONED", axis=1)
 
         st.markdown("## 💰 Estimated Funding")
-        estimated_costs = reg_pipeline.predict(data)
+        estimated_costs = predict_cost(reg_pipeline, data)
         original_data["Estimated_Funding"] = estimated_costs.round(2)
         st.dataframe(original_data[["Estimated_Funding"]])
 
