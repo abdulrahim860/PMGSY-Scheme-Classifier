@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 
 class FeatureEngineer(BaseEstimator, TransformerMixin):
@@ -21,17 +19,4 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
             X["COST_PER_KM"] = 0
             X["EXPENDITURE_RATIO"] = 0
             
-        return X
-
-class DropTargetColumn(BaseEstimator, TransformerMixin):
-    def __init__(self, target_column):
-        self.target_column = target_column
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X):
-        X = X.copy()
-        if self.target_column in X.columns:
-            X = X.drop(self.target_column, axis=1)
         return X
