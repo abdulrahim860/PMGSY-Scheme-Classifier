@@ -4,11 +4,8 @@ import joblib
 from feature_engineer import FeatureEngineer
 from xgboost import XGBClassifier
 
-preprocessor = joblib.load("pmgsy_preprocessor.pkl")
+clf_pipeline = joblib.load("pmgsy_xgb_clf_pipeline.pkl")
 le_scheme=joblib.load("scheme_label_encoder.pkl")
-
-xgb = XGBClassifier()
-xgb.load_model("pmgsy_xgb.json")
 
 reg_pipeline = joblib.load("pmgsy_xgb_reg_pipeline.pkl")
 
@@ -31,12 +28,8 @@ if uploaded_file is not None:
         if "PMGSY_SCHEME" in data.columns:
             data = data.drop("PMGSY_SCHEME", axis=1)
 
-        fe = FeatureEngineer(is_regression=False)
-        data = fe.transform(data)
-        X_processed = preprocessor.transform(data)
-
         st.markdown("## 🔍 Scheme Classification")
-        predictions_num = xgb.predict(X_processed)
+        predictions_num = clf_pipeline.predict(data)
         predictions = le_scheme.inverse_transform(predictions_num)
         original_data["Predicted_Scheme"] = predictions
         st.dataframe(original_data[["Predicted_Scheme"]])
