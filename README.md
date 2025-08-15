@@ -16,7 +16,7 @@ This project provides a robust classifier and cost estimator for PMGSY (Pradhan 
 - [🧠 Tech Stack](#-tech-stack)
 - [⚙️ Setup Instructions](#️-setup-instructions)
 - [📦 Project Structure](#-project-structure)
-- [💬 Usage Example](#usage-example)
+- [💬 Usage Example](#-usage-example)
 - [🏗️ Architectural Choices](#️-architectural-choices)
 - [📄 Example Inputs](#-example-inputs)
 - [🔑 Sample Outputs](#-sample-outputs)
