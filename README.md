@@ -83,20 +83,25 @@ This project provides a robust classifier and cost estimator for PMGSY (Pradhan 
 PMGSY-Scheme-Classifier/
 │
 ├── notebooks/
-│   └── ML.ipynb                      # EDA, training, export scripts
+│   └── ML.ipynb                              # EDA, training, export scripts
+│
+├── data/
+│   └── training_data                         # ML model training data
+│   ├── sample_input_data_scheme_classifier   # scheme classifier sample input data
+│   └── sample_input_data_cost_prediction     # cost prediction sample input data
 │
 ├── pkl/
-│   ├── pmgsy_xgb_clf_pipeline.pkl    # clf model pkl file
-│   ├── pmgsy_xgb_reg_pipeline.pkl    # reg model pkl file
-│   └── scheme_label_encoder.pkl      # label endoder pkl file
+│   ├── pmgsy_xgb_clf_pipeline.pkl            # clf model pkl file
+│   ├── pmgsy_xgb_reg_pipeline.pkl            # reg model pkl file
+│   └── scheme_label_encoder.pkl              # label endoder pkl file
 │ 
 ├── pmgsy/
 │   ├── __init__.py
-│   ├── feature_engineer.py           # Feature engineering classes
-│   ├── preprocessing.py              # Preprocessing pipeline helpers
-│   └──  model_utils.py               # Model loading/saving utilities
+│   ├── feature_engineer.py                   # Feature engineering classes
+│   ├── preprocessing.py                      # Preprocessing pipeline helpers
+│   └──  model_utils.py                       # Model loading/saving utilities
 │   
-├── app.py                            # Streamlit UI
+├── app.py                                    # Streamlit UI
 │
 ├── requirements.txt
 ├── README.md
