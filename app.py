@@ -25,7 +25,7 @@ uploaded_file=st.file_uploader("Upload CSV file",type="csv",key=st.session_state
 if uploaded_file is not None:
     data=pd.read_csv(uploaded_file)
     st.subheader("Uploaded data")
-    st.dataframe(data.head())
+    st.dataframe(data)
 
     original_data=data.copy()
 
